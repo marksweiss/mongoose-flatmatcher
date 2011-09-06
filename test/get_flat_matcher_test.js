@@ -2,25 +2,9 @@
  * Test dependencies.
  */
 
-// TODO GET RID OF AS MUCH OF THESE REQUIRES AS POSSIBLE
-
-var start = require('./common')
-  , should = require('should')
-  , mongoose = start.mongoose
-  , random = require('mongoose/utils').random
-  , Query = require('mongoose/query')
-  , Schema = mongoose.Schema
-  , SchemaType = mongoose.SchemaType
-  , CastError = SchemaType.CastError
-  , ValidatorError = SchemaType.ValidatorError
-  , ValidationError = mongoose.Document.ValidationError
-  , ObjectId = Schema.ObjectId
-  , DocumentObjectId = mongoose.Types.ObjectId
-  , DocumentArray = mongoose.Types.DocumentArray
-  , EmbeddedDocument = mongoose.Types.Document
-  , MongooseNumber = mongoose.Types.Number
-  , MongooseArray = mongoose.Types.Array
-  , MongooseError = mongoose.Error;
+var should = require('should')
+  , mongoose = require('mongoose')
+  , flatMatcher = require('../flatmatcher.js');
 
 /**
  * Setup.
@@ -83,17 +67,23 @@ module.exports = {
 		var testTitle = 'Dot Notation Test';		
     var matchArgs = {title : testTitle, published : true, visitors : 5};    
     var expectedMatcher = {title: testTitle, published: true, 'meta.visitors': 5};
-    var matcher = BlogPost.getMatcher(matchArgs);
-    
-    // Test that we get the expected matcher JSON object for the flat matchArgs
-    // matchArgs cover literal types at root level, nested object and embedded array
-    should.eql(expectedMatcher, matcher);
     
     // Now actually insert some data and retrieve it with find() using the matcher    
     var post = new BlogPost({
       title: testTitle,
       published : true
     });
+    var matcher = null;
+    var opts = {};
+    
+    // Use Mongoose #plugin() to decorate Schema with getMatcher() function
+    BlogPost.plugin(flatMatcher, opts);
+    // Call matcher to transform matchArgs JSON to flattened predicate
+    matcher = BlogPost.getMatcher(matchArgs);    
+    // Test that we get the expected matcher JSON object for the flat matchArgs
+    // matchArgs cover literal types at root level, nested object and embedded array
+    should.eql(expectedMatcher, matcher);
+    
     post.save( function (err) {
       should.strictEqual(null, err);
       post.set('meta.visitors', 5);
@@ -121,15 +111,18 @@ module.exports = {
 		var testTitle = 'Dot Notation Simple Embedded Array Test';
     var matchArgs = {title : testTitle, numbers : 4};    
 		// Numbers is array type, at root level, passed one value, so dot notation path for matching one value is simply the property name	
-    var expectedMatcher = {title: testTitle, numbers : 4};
-    var matcher = BlogPost.getMatcher(matchArgs);
-    
-    should.eql(expectedMatcher, matcher);
-    
+    var expectedMatcher = {title: testTitle, numbers : 4};    
     var post = new BlogPost({
       title: testTitle,
       numbers : [4]
     });
+    var matcher = null;
+    var opts = {};
+    
+    BlogPost.plugin(flatMatcher, opts);
+    matcher = BlogPost.getMatcher(matchArgs);    
+    should.eql(expectedMatcher, matcher);
+        
     post.save( function (err) {
       should.strictEqual(null, err);
       BlogPost.find(matcher, function (err, found) {
@@ -151,14 +144,17 @@ module.exports = {
     var matchArgs = {title : testTitle, numbers : [4, 5]};    
 		// Numbers is array type, at root level, passed multiple values, so $in notation for matching 
 		var expectedMatcher = {title: testTitle, numbers : {'$in' : [4, 5]}};
-    var matcher = BlogPost.getMatcher(matchArgs);
-    
-    should.eql(expectedMatcher, matcher);
-    
+    var matcher = null;
+    var opts = {};
     var post = new BlogPost({
       title: testTitle,
       numbers : [4, 5, 6]
     });
+
+    BlogPost.plugin(flatMatcher, opts);
+    matcher = BlogPost.getMatcher(matchArgs);    
+    should.eql(expectedMatcher, matcher);
+    
     post.save( function (err) {
       should.strictEqual(null, err);
       BlogPost.find(matcher, function (err, found) {
@@ -183,14 +179,17 @@ module.exports = {
     var matchArgs = {title : testTitle, 'comments.title' : 'Great comment!'};    
 		// Comments is array type, at root level, storing objects, passed one value, so dot notation path for matching one value is the nested property name
     var expectedMatcher = {title: testTitle, 'comments.title' : 'Great comment!'};
-    var matcher = BlogPost.getMatcher(matchArgs);
-    
-    should.eql(expectedMatcher, matcher);
-    
     var post = new BlogPost({
       title: testTitle,
       comments : [{title : 'Great comment!', date : new Date(), body : 'I totally agree!', comments : []}]
     });
+    var matcher = null;
+    var opts = {};      
+    
+    BlogPost.plugin(flatMatcher, opts);
+    matcher = BlogPost.getMatcher(matchArgs);    
+    should.eql(expectedMatcher, matcher);
+    
     post.save( function (err) {
       should.strictEqual(null, err);
       BlogPost.find(matcher, function (err, found) {
@@ -212,6 +211,7 @@ module.exports = {
     var matchArgs = {title : testTitle, comments : [{title : 'First comment', date: postDate, body : 'No way', comments : [{title: 'inside'}]}]};    
     // Numbers is array type, at root level, passed multiple values, so $in notation for matching 
     var expectedMatcher = {title: testTitle, comments : {'$in' : [{title : 'First comment', date : postDate, body : 'No way', comments : [{title: 'inside'}]}]}};
+    BlogPost.plugin(flatMatcher, opts);
     var matcher = BlogPost.getMatcher(matchArgs);
         
     should.eql(expectedMatcher, matcher);   

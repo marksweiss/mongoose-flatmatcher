@@ -1,0 +1,25 @@
+{
+  "name": "mongoose-flatmatcher",
+  "description": "Query predicate preprocessing plugin for mongoose node.js orm",
+  "version": "0.0.1",
+  "homepage": "https://github.com/marksweiss/mongoose-flatmatcher/",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/marksweiss/mongoose-flatmatcher.git"
+  },
+  "author": "Mark S. Weiss <marksimonweiss@gmail.com> (https://github.com/marksweiss/)",
+  "main": "./flatmatcher.js",
+  // "directories": {
+  //   "lib": "."
+  // },
+  "dependencies": {
+    "mongoose": ">=1.4.0",
+  },
+  // "devDependencies": {
+  //   "express": ">=2.3.2",
+  //   "jade": ">=0.12.1"
+  // },
+  "engines": {
+    "node": ">=0.4.6"
+  }
+}
