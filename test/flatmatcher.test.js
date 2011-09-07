@@ -1,5 +1,7 @@
 var should = require('should')
     , mongoose = require('mongoose')
+    , Schema = mongoose.Schema
+    , ObjectId = Schema.ObjectId
     , flatMatcher = require('../flatmatcher.js');
 
 // Setup Schemas for testing. These are identical to those used by Mongoose tests
@@ -48,7 +50,7 @@ BlogPost.static('woot', function(){
 
 mongoose.model('BlogPost', BlogPost);
 
-var collection = 'blogposts_' + random();
+var collection = 'blogposts_' + Math.random();
 
 // Use of should for testing, style of tests modeled directly after Mongoose tests
 module.exports = {
