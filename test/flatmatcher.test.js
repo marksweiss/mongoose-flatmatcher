@@ -1,15 +1,8 @@
-/**
- * Test dependencies.
- */
-
 var should = require('should')
-  , mongoose = require('mongoose')
-  , flatMatcher = require('../flatmatcher.js');
+    , mongoose = require('mongoose')
+    , flatMatcher = require('../flatmatcher.js');
 
-/**
- * Setup.
- */
-
+// Setup Schemas for testing. These are identical to those used by Mongoose tests
 var Comments = new Schema();
 
 Comments.add({
@@ -57,6 +50,7 @@ mongoose.model('BlogPost', BlogPost);
 
 var collection = 'blogposts_' + random();
 
+// Use of should for testing, style of tests modeled directly after Mongoose tests
 module.exports = {
 
   'model.matcher() should return correct MongodDB matcher object with dot notation and use it to retrieve data': function () {        
