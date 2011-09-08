@@ -1,15 +1,10 @@
-
-// TODO RE-PASS ALL TESTS
-//  - install
-//  - plugin loading
-
 // TODO
-//  - make tests independent and run independent
-//  - npm-ize
-//   - MAKEFILE to run tests
-//   - test install
-//   - upload and create npm page
-//  - add to github with README
+//  - Change Makefile to run tests from node_modules/mongoose/support/expresso, and cli-tables the same way, produce data in mongo, send out success output to console
+//  -- NOTE that tests are just an export of functions in an anonymous module closure
+//  --  but they don't actually run anything. SEE HOW MONGOOSE RUNS THE TESTS. There must be a test runner
+//  - fully npm-ize, anything more than package.json?
+//  - upload and create npm page
+//  - add to github
 //  - email aheckman
 
 
@@ -189,90 +184,92 @@ var FlatMatcher = (function () {
     return matcherLookup;
   };
   
-  return {
-    /**
-     * Returns the correct MongoDB query syntax JSON for flat JSON object of properties/values to be used
-     *  as Mongo query predicate 
-     *
-     * @see FlatMatcher#buildMatcherLookup
-     * @param {Object} matchArgs JSON properties/values to use in a query matching documents of this Model's Schema
-     * @api public
-     */    
-    getMatcher : function (matchArgs) {
-      // Helper
-    	var isArray = function (value) {
-    	 	return Object.prototype.toString.apply(value) === '[object Array]';
-    	};
-    	// The JSON set of document properties/values to return
-    	var pathString = '';
-    	var matcherLookup = {};
-    	var depth = 0;
-    	matcherLookup = buildMatcherLookup(pathString, this.tree, matcherLookup, depth);
-	
-    	// JSON in valid MongoDB dot-notation and "$in" syntax to be match pred in find(), update() and delete() Mongo calls
-    	var matcher = {};
-    	var propVal = null;
-    	var mlEntry = null;
-    	var j = 0;
-	
-    	for (prop in matchArgs) {	  
-    		if (matcherLookup.hasOwnProperty(prop)) {		  
-      	  propVal = matchArgs[prop];
-    		  mlEntry = matcherLookup[prop];
-	
-    		  // Handle embedded array cases 
-    		  if (mlEntry.isArray) {		    
-    		    // Client can pass in single values or array of values to match against array fields
-    		    // Single values match with standard dot notation, as MongoDB transparently searches the embedded array for
-    		    //  all objects matching the predicate value
-    		    // Multiple values work like SQL "IN", meaning MongoDB searches the embedded array for all objects matching *any*
-    		    //  of the values in the predicate.  Multiple values require "$in" operator in matcher.
-    		    if (isArray(propVal)) {
-      		    // Loop over all values, cast each one
-      		    for (j = 0; j < propVal.length; j += 1) {  		      
-      		      propVal[j] = mlEntry.caster(propVal[j]);
-      		    }
+  /**
+   * Returns the correct MongoDB query syntax JSON for flat JSON object of properties/values to be used
+   *  as Mongo query predicate 
+   *
+   * @see FlatMatcher#buildMatcherLookup
+   * @param {Object} matchArgs JSON properties/values to use in a query matching documents of this Model's Schema
+   * @api public
+   */    
+  var getMatcher = function (matchArgs) {
+    // Helper
+  	var isArray = function (value) {
+  	 	return Object.prototype.toString.apply(value) === '[object Array]';
+  	};
+  	// The JSON set of document properties/values to return
+  	var pathString = '';
+  	var matcherLookup = {};
+  	var depth = 0;
+  	matcherLookup = buildMatcherLookup(pathString, this.tree, matcherLookup, depth);
 
-      		    matcher[mlEntry.pathString] = {"$in" : propVal};
-      		  }
-      		  else {
-      		    matcher[mlEntry.pathString] = mlEntry.caster(propVal);
-      		  }		    
+  	// JSON in valid MongoDB dot-notation and "$in" syntax to be match pred in find(), update() and delete() Mongo calls
+  	var matcher = {};
+  	var propVal = null;
+  	var mlEntry = null;
+  	var j = 0;
+
+  	for (prop in matchArgs) {	  
+  		if (matcherLookup.hasOwnProperty(prop)) {		  
+    	  propVal = matchArgs[prop];
+  		  mlEntry = matcherLookup[prop];
+
+  		  // Handle embedded array cases 
+  		  if (mlEntry.isArray) {		    
+  		    // Client can pass in single values or array of values to match against array fields
+  		    // Single values match with standard dot notation, as MongoDB transparently searches the embedded array for
+  		    //  all objects matching the predicate value
+  		    // Multiple values work like SQL "IN", meaning MongoDB searches the embedded array for all objects matching *any*
+  		    //  of the values in the predicate.  Multiple values require "$in" operator in matcher.
+  		    if (isArray(propVal)) {
+    		    // Loop over all values, cast each one
+    		    for (j = 0; j < propVal.length; j += 1) {  		      
+    		      propVal[j] = mlEntry.caster(propVal[j]);
+    		    }
+
+    		    matcher[mlEntry.pathString] = {"$in" : propVal};
     		  }
-    		  // Matching single value field
     		  else {
     		    matcher[mlEntry.pathString] = mlEntry.caster(propVal);
-    		  }
-    		}
-    	}
-	
-    	return matcher;
-    },
-   
-    /**
-     * Gets the maximum depth the FlatMatcher will recurse on Schema to build matcher from args
-     * @api public
-     */    
-    getMaxDepth : function () {
-      return maxDepth;
-    },
+    		  }		    
+  		  }
+  		  // Matching single value field
+  		  else {
+  		    matcher[mlEntry.pathString] = mlEntry.caster(propVal);
+  		  }
+  		}
+  	}
 
-    /**
-     * Sets the maximum depth the FlatMatcher will recurse on Schema to build matcher from args. Default is 5.
-     *  Note: protects against cycles which will never exit recursion, so should be set to some reasonable value.
-     *
-     * @param {Number} depth value for maximum recursion depth
-     * @api public
-     */    
-    setMaxDepth : function (depth) {
-      maxDepth = depth;
+  	return matcher;
+  };
+ 
+  /**
+   * Gets the maximum depth the FlatMatcher will recurse on Schema to build matcher from args
+   * @api public
+   */    
+  var getMaxDepth = function () {
+    return maxDepth;
+  };
+
+  /**
+   * Sets the maximum depth the FlatMatcher will recurse on Schema to build matcher from args. Default is 5.
+   *  Note: protects against cycles which will never exit recursion, so should be set to some reasonable value.
+   *
+   * @param {Number} depth value for maximum recursion depth
+   * @api public
+   */    
+  var setMaxDepth = function (depth) {
+    maxDepth = depth;
+  };
+  
+  return {   
+    plugin : function (schema, opts) {
+      schema.static('getFlatMatcher', getMatcher);
+      schema.static('setFlatMatcherMaxDepth', setMaxDepth);
+      schema.static('getFlatMatcherMaxDepth', getMaxDepth);  
     }
-  }
-})();
+  };
+}());
 
-exports = function (schema, opts) {
-  schema.static('getFlatMatcher', FlatMatcher.geMatcher);
-  schema.static('setFlatMatcherMaxDepth', FlatMatcher.setMaxDepth);
-  schema.static('getFlatMatcherMaxDepth', FlatMatcher.getMaxDepth);  
-};
+exports.plugin = FlatMatcher.plugin;
 
