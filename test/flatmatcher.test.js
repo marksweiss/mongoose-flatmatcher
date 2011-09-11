@@ -58,9 +58,9 @@ module.exports = {
     var collection = 'flatmatcher_1'
       , db = start()
       , BlogPostModel = db.model('BlogPost', collection);
-
-		// Matches attributes with simple types at root level and nested attributes
-		var testTitle = 'Dot Notation Test';		
+    
+    // Matches attributes with simple types at root level and nested attributes
+    var testTitle = 'Dot Notation Test';
     var matchArgs = {title : testTitle, published : true, visitors : 5};    
     var expectedMatchObj = {title: testTitle, published: true, 'meta.visitors': 5};  
     // Now actually insert some data and retrieve it with find() using the matcher    

@@ -1,13 +1,3 @@
-// TODO
-//  - Change Makefile to run tests from node_modules/mongoose/support/expresso, and cli-tables the same way, produce data in mongo, send out success output to console
-//  -- NOTE that tests are just an export of functions in an anonymous module closure
-//  --  but they don't actually run anything. SEE HOW MONGOOSE RUNS THE TESTS. There must be a test runner
-//  - fully npm-ize, anything more than package.json?
-//  - upload and create npm page
-//  - add to github
-//  - email aheckman
-
-
 var FlatMatcher = (function () {        
   /**
    * Returns the correct MongoDB query syntax JSON for flat JSON object of properties/values to be used
