@@ -49,9 +49,8 @@ To decorate your schema:
 
 ## Motivation
 
-If all property names at all levels in a Schema are unique, then clients can query on any combination of properties in the Schema by passing only a flat JSON of of keys and values.
+If all property names at all levels in a Schema are unique, then clients can query on any combination of properties in the Schema by passing only a flat JSON of of keys and values. This is a convenient idiom in any case where:
 
-This is a convenient idiom in any case where:
 - Data is accessed through a REST API and you want to support a minimum of mapped accessor resources and allow name/value access through the query string. Since node web app frameworks typically expose the query string as a JSON object, this seamlessly extends that functionality to map the query string into an arbitrary Mongoose schema.
 - Data is read or written by various front end calls from Ajax or form submits, and you don't want to leak the abstraction of full dot-notation and `$in` syntax qualification into the client code in many places
 - The Schema may change often
