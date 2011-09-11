@@ -62,6 +62,15 @@ If all property names at all levels in a Schema are unique, then clients can que
 - Retrieving Mongoose Schema objects in an embedded array using `$in` is not supported fully, and the test for this case is incomplete. This is because retrieving objects in embedded arrays in MongoDB requires passing literals that fully match the objects in the database, but constructed Schema objects in Mongoose add properties for internal implementation that are then in the documents in the database but not easily available to the client needing to match those objects in those documents exactly.
 - mongoose-flatmatcher depends on the private implementation of the Mongoose Schema class, in particular the 'tree' property of that class.
 
+## Installation
+
+`npm install mongoose-flatmatcher`.  The simply `require('flatmatcher)` in modules where you wish to use flatmatcher.
+
+## Development
+
+To run the tests in test/, `make test`. You will need to install the dev dependencies listed in package.json.  To do so run `npm install` from the directory you installed mongoose-flatmatcher into, which will be ~/node_modules/mongoose-flatmatcher if you installed using `npm install mongoose-flatmatcher`.
+
+
 ## License
 
 MIT License
