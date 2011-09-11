@@ -23,7 +23,7 @@ To decorate your schema:
 
 ```javascript
 		var Schema = mongoose.Schema
-				, flatMatcher = require('./flat_matcher.js');
+				, flatMatcher = require('mongoose-flatmatcher');
 
 		var BlogPost = new Schema({
 		    title     : String
