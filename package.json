@@ -1,7 +1,7 @@
 {
   "name": "mongoose-flatmatcher",
-  "version": "0.0.1",
-  "description": "Query predicate preprocessing plugin for mongoose node.js orm supporting querying arbitrary Scehmas with flat key/value JSON",
+  "version": "0.0.2",
+  "description": "Mongoose plugin mapping flat name/value JSON to Mongoose Schemas which may have nesting and embedded arrays",
   "keywords": ["mongodb", "mongoose", "orm", "data", "datastore", "nosql", "mongodb", "mongoose plugin", "data access", "data API"],
   "author": "Mark S. Weiss <marksimonweiss@gmail.com> (https://github.com/marksweiss/)",
   "homepage": "https://github.com/marksweiss/mongoose-flatmatcher/",

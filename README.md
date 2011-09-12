@@ -64,12 +64,11 @@ If all property names at all levels in a Schema are unique, then clients can que
 
 ## Installation
 
-`npm install mongoose-flatmatcher`.  The simply `require('flatmatcher)` in modules where you wish to use flatmatcher.
+`npm install mongoose-flatmatcher`.  The simply `require('flatmatcher')` in modules where you wish to use flatmatcher.
 
 ## Development
 
-To run the tests in test/, `make test`. You will need to install the dev dependencies listed in package.json.  To do so run `npm install` from the directory you installed mongoose-flatmatcher into, which will be ~/node_modules/mongoose-flatmatcher if you installed using `npm install mongoose-flatmatcher`.
-
+To run the tests in test/, `make test`. You will need to install the dev dependencies listed in package.json.  To do so run `npm install [DEP]` from the directory you installed mongoose-flatmatcher into, which will be ~/node_modules/mongoose-flatmatcher if you installed using `npm install mongoose-flatmatcher`.
 
 ## License
 
