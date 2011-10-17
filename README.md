@@ -1,7 +1,7 @@
 mongoose-flatmatcher
 ====================
 
-An query pre-processing plugin for Mongoose node.js ORM.
+An query pre-processing plugin for the Mongoose node.js ORM.
 
 mongoose-flatmatcher allows you fully encapsulate client access to your Mongoose Schemas by freeing them from needing to provide JSON objects with fully qualified MongodDB dot-notation paths and `$in` syntax for nested array document properties.
 
@@ -59,12 +59,12 @@ If all property names at all levels in a Schema are unique, then clients can que
 ## Limitations and Issues
 
 - If a property name in a Schema is not unique, clients must, as they would without mongoose-flatmatcher, pass in a fully-qualified property name with dot notation to `getMatchObj`. flatmatcher cannot magically disambiguate properties with the same name which live at different levels in a Schema.
-- Retrieving Mongoose Schema objects in an embedded array using `$in` is not supported fully, and the test for this case is incomplete. This is because retrieving objects in embedded arrays in MongoDB requires passing literals that fully match the objects in the database, but constructed Schema objects in Mongoose add properties for internal implementation that are then in the documents in the database but not easily available to the client needing to match those objects in those documents exactly.
+- Retrieving Mongoose Schema objects in an embedded array using `$in` is not supported fully, and the test for this case is incomplete. This is because retrieving objects in embedded arrays in MongoDB requires passing literals that fully match the objects in the database, but constructed Schema objects in Mongoose add properties for internal implementation that are then in the documents in the database but not easily available to the client needing to exactly match those objects in those documents.
 - mongoose-flatmatcher depends on the private implementation of the Mongoose Schema class, in particular the 'tree' property of that class.
 
 ## Installation
 
-`npm install mongoose-flatmatcher`.  The simply `require('flatmatcher')` in modules where you wish to use flatmatcher.
+`npm install mongoose-flatmatcher`.  Then simply `require('flatmatcher')` in modules where you wish to use flatmatcher.
 
 ## Development
 
