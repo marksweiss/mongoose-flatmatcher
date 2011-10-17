@@ -1,7 +1,7 @@
 mongoose-flatmatcher
 ====================
 
-An query pre-processing plugin for the Mongoose node.js ORM.
+A query pre-processing plugin for the Mongoose node.js ORM.
 
 mongoose-flatmatcher allows you fully encapsulate client access to your Mongoose Schemas by freeing them from needing to provide JSON objects with fully qualified MongodDB dot-notation paths and `$in` syntax for nested array document properties.
 
